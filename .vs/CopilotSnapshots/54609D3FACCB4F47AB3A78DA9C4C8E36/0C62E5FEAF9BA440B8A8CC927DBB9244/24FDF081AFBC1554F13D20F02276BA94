@@ -1,0 +1,56 @@
+﻿using CMS.AuthService.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting; // Added for AddServiceDefaults & MapDefaultEndpoints
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Apply Aspire service defaults (service discovery, resilience, telemetry, health checks)
+builder.AddServiceDefaults();
+
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+var connectionString = builder.Configuration.GetConnectionString("authdb")
+    ?? "Data Source=auth.db";
+
+builder.Services.AddDbContext<AuthDbContext>(o => o.UseSqlite(connectionString));
+
+var app = builder.Build();
+if (app.Environment.IsDevelopment()) app.MapOpenApi();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    var force = app.Environment.IsDevelopment() && Environment.GetEnvironmentVariable("DEV_FORCE_MIGRATE") == "1";
+    try
+    {
+        if (force)
+        {
+            Console.WriteLine("[DEV] DEV_FORCE_MIGRATE=1 detected. Dropping AuthService DB before migrate.");
+            db.Database.EnsureDeleted();
+        }
+        db.Database.Migrate();
+    }
+    catch (Exception ex) when (app.Environment.IsDevelopment())
+    {
+        Console.WriteLine($"[DEV] Migration failed ({ex.GetType().Name}): {ex.Message}. Resetting database.");
+        db.Database.EnsureDeleted();
+        db.Database.Migrate();
+    }
+    // No credential seeding; sessions are created dynamically at login.
+}
+
+// Basic request logging for debugging reachability
+app.Use(async (ctx, next) =>
+{
+    Console.WriteLine($"[AuthSvc] {ctx.Request.Method} {ctx.Request.Path}");
+    await next();
+});
+
+// Map health endpoints & defaults from Aspire service defaults
+app.MapDefaultEndpoints();
+
+app.MapControllers();
+app.Run();
+
+// Removed password hashing helper (handled in UserService).

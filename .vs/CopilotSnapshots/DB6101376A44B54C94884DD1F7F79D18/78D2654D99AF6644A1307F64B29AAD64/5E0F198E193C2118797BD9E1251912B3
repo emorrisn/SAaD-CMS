@@ -1,0 +1,52 @@
+﻿using CMS.ComplaintService.Application.Handlers;
+using CMS.ComplaintService.Application.Queries;
+using CMS.ComplaintService.Domain.Entities;
+using CMS.ComplaintService.Domain.Enums;
+using CMS.ComplaintService.Infrastructure.Data;
+using CMS.ComplaintService.Infrastructure.Messaging;
+using CMS.ComplaintService.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+var connectionString = builder.Configuration.GetConnectionString("cmsdb")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cmsdb";
+
+builder.Services.AddDbContext<ComplaintDbContext>(options =>
+{
+    options.UseNpgsql(connectionString);
+});
+
+builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
+builder.Services.AddScoped<LogComplaintHandler>();
+builder.Services.AddScoped<IComplaintQueryService, ComplaintQueryService>();
+builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ComplaintDbContext>();
+    await db.Database.EnsureCreatedAsync();
+    if (!await db.Tenants.AnyAsync())
+    {
+        db.Tenants.Add(new Tenant { TenantID = "tenant-demo", CompanyName = "Demo Co", Industry = "Software" });
+        db.Users.Add(new User { UserID = Guid.NewGuid(), TenantID = "tenant-demo", Username = "agent1", Role = UserRole.Agent });
+        db.Users.Add(new User { UserID = Guid.NewGuid(), TenantID = "tenant-demo", Username = "support1", Role = UserRole.Support });
+        await db.SaveChangesAsync();
+    }
+}
+
+app.UseHttpsRedirection();
+app.MapControllers();
+
+app.Run();

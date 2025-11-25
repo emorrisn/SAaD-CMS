@@ -1,0 +1,92 @@
+﻿using CMS.ComplaintService.Application.Handlers;
+using CMS.ComplaintService.Application.Queries;
+using CMS.ComplaintService.Domain.Entities;
+using CMS.ComplaintService.Domain.Enums;
+using CMS.ComplaintService.Infrastructure.Data;
+using CMS.ComplaintService.Infrastructure.Messaging;
+using CMS.ComplaintService.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+var connectionString = builder.Configuration.GetConnectionString("cmsdb")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=cmsdb";
+
+builder.Services.AddDbContext<ComplaintDbContext>(options =>
+{
+    // Enable the EF Core relational retry-on-failure for transient errors
+    options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.EnableRetryOnFailure());
+});
+
+builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
+builder.Services.AddScoped<LogComplaintHandler>();
+builder.Services.AddScoped<IComplaintQueryService, ComplaintQueryService>();
+builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+// Replace a single-call EnsureCreatedAsync with a retry/backoff helper. This prevents a race where
+// Postgres is still starting up and returns SQLSTATE57P03 (the database system is starting up).
+async Task EnsureDatabaseCreatedWithRetryAsync(IServiceProvider services, CancellationToken ct = default)
+{
+    const int maxAttempts = 10;
+    var delay = TimeSpan.FromSeconds(2);
+
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            using var scope = services.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ComplaintDbContext>();
+
+            // Ensure created and seed if necessary
+            await db.Database.EnsureCreatedAsync(ct);
+            if (!await db.Tenants.AnyAsync(ct))
+            {
+                db.Tenants.Add(new Tenant { TenantID = "tenant-demo", CompanyName = "Demo Co", Industry = "Software" });
+                db.Users.Add(new User { UserID = Guid.NewGuid(), TenantID = "tenant-demo", Username = "agent1", Role = UserRole.Agent });
+                db.Users.Add(new User { UserID = Guid.NewGuid(), TenantID = "tenant-demo", Username = "support1", Role = UserRole.Support });
+                await db.SaveChangesAsync(ct);
+            }
+
+            return;
+        }
+        catch (PostgresException ex) when (ex.SqlState == "57P03")
+        {
+            // The database is still starting up; wait and retry
+            if (attempt == maxAttempts) throw;
+        }
+        catch (NpgsqlException)
+        {
+            // Transient Npgsql/network error; retry
+            if (attempt == maxAttempts) throw;
+        }
+        catch (Exception)
+        {
+            // For unexpected exceptions, rethrow immediately
+            throw;
+        }
+
+        // Exponential backoff with an upper bound
+        await Task.Delay(delay, ct);
+        delay = TimeSpan.FromSeconds(Math.Min(30, delay.TotalSeconds * 2));
+    }
+}
+
+// Wait for DB initialization with retries
+await EnsureDatabaseCreatedWithRetryAsync(app.Services);
+
+app.UseHttpsRedirection();
+app.MapControllers();
+
+app.Run();

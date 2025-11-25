@@ -1,0 +1,208 @@
+﻿using Yarp.ReverseProxy;
+using Yarp.ReverseProxy.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting; // for AddServiceDefaults & MapDefaultEndpoints
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Aspire defaults (service discovery, resilience, telemetry, health checks)
+builder.AddServiceDefaults();
+
+// Resolve service URIs via Aspire service discovery instead of manual env variables
+var complaintsUri = builder.Configuration.GetServiceUri("complaint-service");
+var tenantsUri = builder.Configuration.GetServiceUri("tenant-service");
+var usersUri = builder.Configuration.GetServiceUri("user-service");
+var authUri = builder.Configuration.GetServiceUri("auth-service");
+
+if (complaintsUri is null || tenantsUri is null || usersUri is null || authUri is null)
+{
+ Console.WriteLine("[Gateway] One or more service URIs missing from service discovery.");
+}
+
+// HttpClient for AuthService (allow dev certs in Development)
+var authClientBuilder = builder.Services.AddHttpClient("auth", c =>
+{
+ if (authUri != null) c.BaseAddress = authUri;
+});
+if (builder.Environment.IsDevelopment())
+{
+ authClientBuilder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+ {
+ ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+ });
+}
+
+builder.Services.AddCors(options =>
+{
+ options.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
+builder.Services
+ .AddReverseProxy()
+ .LoadFromMemory(
+ routes: new[]
+ {
+ new RouteConfig
+ {
+ RouteId = "complaints-route",
+ ClusterId = "complaints",
+ Match = new RouteMatch { Path = "/api/complaints/{**catch-all}" }
+ },
+ new RouteConfig
+ {
+ RouteId = "tenants-route",
+ ClusterId = "tenants",
+ Match = new RouteMatch { Path = "/api/tenants/{**catch-all}" }
+ },
+ new RouteConfig
+ {
+ RouteId = "users-route",
+ ClusterId = "users",
+ Match = new RouteMatch { Path = "/api/users/{**catch-all}" }
+ },
+ new RouteConfig
+ {
+ RouteId = "auth-route",
+ ClusterId = "auth",
+ Match = new RouteMatch { Path = "/auth/{**catch-all}" }
+ }
+ },
+ clusters: new[]
+ {
+ new ClusterConfig
+ {
+ ClusterId = "complaints",
+ Destinations = new Dictionary<string, DestinationConfig>
+ {
+ ["primary"] = new DestinationConfig { Address = complaintsUri?.ToString().TrimEnd('/') + "/" ?? "http://localhost:5005/" }
+ }
+ },
+ new ClusterConfig
+ {
+ ClusterId = "tenants",
+ Destinations = new Dictionary<string, DestinationConfig>
+ {
+ ["primary"] = new DestinationConfig { Address = tenantsUri?.ToString().TrimEnd('/') + "/" ?? "http://localhost:5006/" }
+ }
+ },
+ new ClusterConfig
+ {
+ ClusterId = "users",
+ Destinations = new Dictionary<string, DestinationConfig>
+ {
+ ["primary"] = new DestinationConfig { Address = usersUri?.ToString().TrimEnd('/') + "/" ?? "http://localhost:5007/" }
+ }
+ },
+ new ClusterConfig
+ {
+ ClusterId = "auth",
+ Destinations = new Dictionary<string, DestinationConfig>
+ {
+ ["primary"] = new DestinationConfig { Address = authUri?.ToString().TrimEnd('/') + "/" ?? "http://localhost:5008/" }
+ },
+ // Force HTTP/1.1 if upstream only supports it to avoid h2c timeouts
+ HttpRequest = new Yarp.ReverseProxy.Configuration.HttpRequestConfig
+ {
+ Version = "1.1",
+ VersionPolicy = "RequestVersionOrLower"
+ }
+ }
+ }
+ );
+
+var app = builder.Build();
+
+app.UseCors();
+
+// Strip any spoofed internal trust header coming from outside.
+app.Use(async (ctx, next) =>
+{
+ if (ctx.Request.Headers.ContainsKey("X-Internal-Trusted"))
+ ctx.Request.Headers.Remove("X-Internal-Trusted");
+ await next();
+});
+
+// Authentication middleware: protect all routes except login/register.
+app.Use(async (ctx, next) =>
+{
+ var path = ctx.Request.Path.Value?.ToLowerInvariant() ?? string.Empty;
+ if (path.StartsWith("/auth/login") || path.StartsWith("/auth/register") || path == "/")
+ {
+ await next();
+ return;
+ }
+
+ var authHeader = ctx.Request.Headers["Authorization"].FirstOrDefault();
+ if (string.IsNullOrWhiteSpace(authHeader) || !authHeader.StartsWith("Bearer "))
+ {
+ ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+ await ctx.Response.WriteAsync("Missing bearer token");
+ return;
+ }
+ var rawToken = authHeader.Substring("Bearer ".Length).Trim();
+
+ JwtSecurityToken? jwtToken = null;
+ try
+ {
+ var handler = new JwtSecurityTokenHandler();
+ jwtToken = handler.ReadToken(rawToken) as JwtSecurityToken;
+ }
+ catch
+ {
+ ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+ await ctx.Response.WriteAsync("Invalid token format");
+ return;
+ }
+ if (jwtToken == null)
+ {
+ ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+ await ctx.Response.WriteAsync("Invalid token");
+ return;
+ }
+
+ var sid = jwtToken.Claims.FirstOrDefault(c => c.Type == "sid")?.Value;
+ var tenantClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "tenant")?.Value;
+ var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+ if (string.IsNullOrWhiteSpace(sid) || string.IsNullOrWhiteSpace(tenantClaim) || string.IsNullOrWhiteSpace(userIdClaim))
+ {
+ ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+ await ctx.Response.WriteAsync("Missing claims");
+ return;
+ }
+
+ var headerTenant = ctx.Request.Headers["x-tenant-id"].FirstOrDefault();
+ if (!string.IsNullOrWhiteSpace(headerTenant) && !string.Equals(headerTenant, tenantClaim, StringComparison.OrdinalIgnoreCase))
+ {
+ ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+ await ctx.Response.WriteAsync("Tenant mismatch");
+ return;
+ }
+
+ var clientFactory = ctx.RequestServices.GetRequiredService<IHttpClientFactory>();
+ var client = clientFactory.CreateClient("auth");
+ var sessionValidate = await client.GetAsync($"/auth/sessions/{sid}?token={Uri.EscapeDataString(rawToken)}");
+ if (!sessionValidate.IsSuccessStatusCode)
+ {
+ ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+ await ctx.Response.WriteAsync("Invalid session");
+ return;
+ }
+
+ // Attach user context for downstream services if needed
+ ctx.Items["UserId"] = userIdClaim;
+ ctx.Items["TenantId"] = tenantClaim;
+
+ await next();
+});
+
+app.MapGet("/", () => "CMS Gateway is running");
+
+// Health endpoints from Aspire defaults
+app.MapDefaultEndpoints();
+
+app.MapReverseProxy();
+
+app.Run();

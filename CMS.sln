@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.0.0
+MinimumVisualStudioVersion = 17.8.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.AppHost", "CMS.AppHost\CMS.AppHost.csproj", "{9CEC14C0-30A6-47AA-8616-F6FB81235D51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.ServiceDefaults", "CMS.ServiceDefaults\CMS.ServiceDefaults.csproj", "{34F9BF2E-46F3-47E2-B093-91F0DE85577F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.ComplaintService", "CMS.ComplaintService\CMS.ComplaintService.csproj", "{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.Web", "CMS.Web\CMS.Web.csproj", "{61894BCD-2AB3-C49A-5639-716498DECFCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.AuthService", "CMS.AuthService\CMS.AuthService.csproj", "{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.TenantService", "CMS.TenantService\CMS.TenantService.csproj", "{FC194F17-2379-03C3-1ABB-77334032C174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS.UserService", "CMS.UserService\CMS.UserService.csproj", "{25715B7F-D97C-63BF-FCDF-E4DA3EE04820}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CEC14C0-30A6-47AA-8616-F6FB81235D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CEC14C0-30A6-47AA-8616-F6FB81235D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CEC14C0-30A6-47AA-8616-F6FB81235D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CEC14C0-30A6-47AA-8616-F6FB81235D51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34F9BF2E-46F3-47E2-B093-91F0DE85577F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34F9BF2E-46F3-47E2-B093-91F0DE85577F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34F9BF2E-46F3-47E2-B093-91F0DE85577F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34F9BF2E-46F3-47E2-B093-91F0DE85577F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61894BCD-2AB3-C49A-5639-716498DECFCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61894BCD-2AB3-C49A-5639-716498DECFCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61894BCD-2AB3-C49A-5639-716498DECFCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61894BCD-2AB3-C49A-5639-716498DECFCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC194F17-2379-03C3-1ABB-77334032C174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC194F17-2379-03C3-1ABB-77334032C174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC194F17-2379-03C3-1ABB-77334032C174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC194F17-2379-03C3-1ABB-77334032C174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25715B7F-D97C-63BF-FCDF-E4DA3EE04820}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25715B7F-D97C-63BF-FCDF-E4DA3EE04820}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25715B7F-D97C-63BF-FCDF-E4DA3EE04820}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25715B7F-D97C-63BF-FCDF-E4DA3EE04820}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29D488E1-518B-4DE7-8B70-F0C38275FB59}
+	EndGlobalSection
+EndGlobal

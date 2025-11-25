@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<Sdk Name="Aspire.AppHost.Sdk" Version="9.5.2" />
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UserSecretsId>f455c04f-a1a7-4c3a-ab29-403da3434a09</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting" Version="13.0.0" />
+		<PackageReference Include="Aspire.Hosting.AppHost" Version="13.0.0" />
+		<PackageReference Include="Aspire.Hosting.NodeJs" Version="9.5.2" />
+		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+		<PackageReference Include="Aspire.Hosting.Redis" Version="13.0.0" />
+		<PackageReference Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions" Version="9.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CMS.ComplaintService\CMS.ComplaintService.csproj" />
+		<ProjectReference Include="..\CMS.Web\CMS.Web.csproj" />
+		<ProjectReference Include="..\CMS.ServiceDefaults\CMS.ServiceDefaults.csproj" />
+		<ProjectReference Include="..\CMS.TenantService\CMS.TenantService.csproj" />
+		<ProjectReference Include="..\CMS.UserService\CMS.UserService.csproj" />
+		<ProjectReference Include="..\CMS.AuthService\CMS.AuthService.csproj" />
+	</ItemGroup>
+
+	<Target Name="RestoreNpm" BeforeTargets="Build" Condition=" '$(DesignTimeBuild)' != 'true' ">
+		<ItemGroup>
+			<PackageJsons Include="..\*\package.json" />
+		</ItemGroup>
+
+		<!-- Install npm packages if node_modules is missing -->
+		<Message Importance="Normal" Text="Installing pnpm packages for %(PackageJsons.RelativeDir)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+		<Exec Command="pnpm install" WorkingDirectory="%(PackageJsons.RootDir)%(PackageJsons.Directory)" Condition="!Exists('%(PackageJsons.RootDir)%(PackageJsons.Directory)/node_modules')" />
+	</Target>
+
+</Project>

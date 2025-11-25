@@ -1,0 +1,28 @@
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.deps.json
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.dll
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.pdb
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.csproj.AssemblyReference.cache
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.AssemblyInfoInputs.cache
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.AssemblyInfo.cs
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.dll
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\refint\CMS.ServiceDefaults.dll
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.pdb
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\ref\CMS.ServiceDefaults.dll
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\Aspire\references\.ProjectMetadata.g.cs
+C:\Users\ethan\Education\University\2025\Software Architecture and Design\Proof of Concept\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\Aspire\references\_AppHost.ProjectMetadata.g.cs
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.deps.json
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.dll
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\bin\Debug\net9.0\CMS.ServiceDefaults.pdb
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.csproj.AssemblyReference.cache
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.AssemblyInfoInputs.cache
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.AssemblyInfo.cs
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.csproj.CoreCompileInputs.cache
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\Aspire\references\.ProjectMetadata.g.cs
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\Aspire\references\_AppHost.ProjectMetadata.g.cs
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.dll
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\refint\CMS.ServiceDefaults.dll
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\CMS.ServiceDefaults.pdb
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.ServiceDefaults\obj\Debug\net9.0\ref\CMS.ServiceDefaults.dll
