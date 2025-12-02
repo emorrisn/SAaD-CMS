@@ -37,9 +37,9 @@ if (app.Environment.IsDevelopment())
 // Internal verification middleware
 app.Use(async (ctx, next) =>
 {
-    var requireInternal = ctx.GetEndpoint()?.Metadata.GetMetadata<RequireInternalAttribute>() != null;
+    var internalOnly = ctx.GetEndpoint()?.Metadata.GetMetadata<InternalOnlyAttribute>() != null;
     var internalTrusted = ctx.Request.Headers.TryGetValue("X-Internal-Trusted", out var v) && v == "true";
-    if (requireInternal && !internalTrusted)
+    if (internalOnly && !internalTrusted)
     {
         ctx.Response.StatusCode = 403;
         await ctx.Response.WriteAsync("Internal trust required");

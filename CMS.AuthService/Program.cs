@@ -19,6 +19,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.MapOpenApi();
 
 app.MapDefaultEndpoints();
-app.MapGet("/ping", () => Results.Ok("Running"));
+app.MapGet("/auth/ping", () => Results.Ok("Running"));
 app.MapControllers();
 app.Run();

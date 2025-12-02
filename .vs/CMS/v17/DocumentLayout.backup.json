@@ -3,36 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}|CMS.ComplaintService\\CMS.ComplaintService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.complaintservice\\controllers\\complaintapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}|CMS.ComplaintService\\CMS.ComplaintService.csproj|solutionrelative:cms.complaintservice\\controllers\\complaintapicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}|CMS.ComplaintService\\CMS.ComplaintService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.complaintservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5330BAC6-FB93-EE25-2753-7CE91C6F62E6}|CMS.ComplaintService\\CMS.ComplaintService.csproj|solutionrelative:cms.complaintservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}|CMS.AuthService\\CMS.AuthService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.authservice\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}|CMS.AuthService\\CMS.AuthService.csproj|solutionrelative:cms.authservice\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{61894BCD-2AB3-C49A-5639-716498DECFCB}|CMS.Web\\CMS.Web.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{61894BCD-2AB3-C49A-5639-716498DECFCB}|CMS.Web\\CMS.Web.csproj|solutionrelative:cms.web\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FC194F17-2379-03C3-1ABB-77334032C174}|CMS.TenantService\\CMS.TenantService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.tenantservice\\controllers\\tenantscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC194F17-2379-03C3-1ABB-77334032C174}|CMS.TenantService\\CMS.TenantService.csproj|solutionrelative:cms.tenantservice\\controllers\\tenantscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FC194F17-2379-03C3-1ABB-77334032C174}|CMS.TenantService\\CMS.TenantService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.tenantservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC194F17-2379-03C3-1ABB-77334032C174}|CMS.TenantService\\CMS.TenantService.csproj|solutionrelative:cms.tenantservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}|CMS.AuthService\\CMS.AuthService.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.authservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{31573ECB-68C3-5B0F-13B9-52F66F1FC81D}|CMS.AuthService\\CMS.AuthService.csproj|solutionrelative:cms.authservice\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9CEC14C0-30A6-47AA-8616-F6FB81235D51}|CMS.AppHost\\CMS.AppHost.csproj|c:\\users\\ethan\\projects\\university\\sad\\poc\\cms\\cms.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9CEC14C0-30A6-47AA-8616-F6FB81235D51}|CMS.AppHost\\CMS.AppHost.csproj|solutionrelative:cms.apphost\\apphost.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -51,105 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ComplaintApiController.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.ComplaintService\\Controllers\\ComplaintApiController.cs",
-              "RelativeDocumentMoniker": "CMS.ComplaintService\\Controllers\\ComplaintApiController.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.ComplaintService\\Controllers\\ComplaintApiController.cs",
-              "RelativeToolTip": "CMS.ComplaintService\\Controllers\\ComplaintApiController.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAA6wB8AAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T14:44:53.551Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.ComplaintService\\Program.cs",
-              "RelativeDocumentMoniker": "CMS.ComplaintService\\Program.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.ComplaintService\\Program.cs",
-              "RelativeToolTip": "CMS.ComplaintService\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T14:44:51.024Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "TenantsController.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.TenantService\\Controllers\\TenantsController.cs",
-              "RelativeDocumentMoniker": "CMS.TenantService\\Controllers\\TenantsController.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.TenantService\\Controllers\\TenantsController.cs",
-              "RelativeToolTip": "CMS.TenantService\\Controllers\\TenantsController.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T14:05:17.616Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.TenantService\\Program.cs",
-              "RelativeDocumentMoniker": "CMS.TenantService\\Program.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.TenantService\\Program.cs",
-              "RelativeToolTip": "CMS.TenantService\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T14:05:14.731Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AuthService\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "CMS.AuthService\\Controllers\\AuthController.cs",
               "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AuthService\\Controllers\\AuthController.cs",
               "RelativeToolTip": "CMS.AuthService\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAEwCEAAABBAAAAAAAAAA==",
+              "ViewState": "AgIAALgAAAAAAAAAAAAUwMMAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T14:03:09.075Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AppHost.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AppHost\\AppHost.cs",
-              "RelativeDocumentMoniker": "CMS.AppHost\\AppHost.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AppHost\\AppHost.cs",
-              "RelativeToolTip": "CMS.AppHost\\AppHost.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T13:22:22.758Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.Web\\Program.cs",
-              "RelativeDocumentMoniker": "CMS.Web\\Program.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.Web\\Program.cs",
-              "RelativeToolTip": "CMS.Web\\Program.cs",
-              "ViewState": "AgIAAM0AAAAAAAAAAAAawNMAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T12:50:44.724Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AuthService\\Program.cs",
-              "RelativeDocumentMoniker": "CMS.AuthService\\Program.cs",
-              "ToolTip": "C:\\Users\\ethan\\Projects\\University\\SAD\\POC\\CMS\\CMS.AuthService\\Program.cs",
-              "RelativeToolTip": "CMS.AuthService\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T12:26:23.892Z",
+              "WhenOpened": "2025-12-01T16:13:22.646Z",
               "EditorCaption": ""
             }
           ]

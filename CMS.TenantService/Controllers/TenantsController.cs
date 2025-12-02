@@ -12,6 +12,12 @@ public class TenantsController : ControllerBase
     private readonly TenantDbContext _db;
     public TenantsController(TenantDbContext db) => _db = db;
 
+    [HttpGet("list")]
+    public async Task<IActionResult> GetList(CancellationToken ct)
+    {
+        return Ok(await _db.Tenants.Where(t => t.IsActive).Select(t => new { t.TenantId, t.Name }).ToListAsync(ct));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetByCode(Guid id, CancellationToken ct)
     {
@@ -30,7 +36,7 @@ public class TenantsController : ControllerBase
     }
 
     [HttpPost("{code}/activate")]
-    [RequireInternal]
+    [InternalOnly]
     public async Task<IActionResult> Activate(string code, CancellationToken ct)
     {
         var tenant = await _db.Tenants.FirstOrDefaultAsync(t => t.Code == code, ct);
@@ -41,7 +47,7 @@ public class TenantsController : ControllerBase
     }
 
     [HttpPost("{code}/deactivate")]
-    [RequireInternal]
+    [InternalOnly]
     public async Task<IActionResult> Deactivate(string code, CancellationToken ct)
     {
         var tenant = await _db.Tenants.FirstOrDefaultAsync(t => t.Code == code, ct);
@@ -55,4 +61,4 @@ public class TenantsController : ControllerBase
 public record CreateTenantDto(string Code, string Name, string? Industry);
 
 // Attribute & middleware helper could be elsewhere; placed inline for brevity.
-public sealed class RequireInternalAttribute : Attribute {}
+public sealed class InternalOnlyAttribute : Attribute {}

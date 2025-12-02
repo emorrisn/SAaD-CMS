@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CMS.ComplaintService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+85667881411253aadd977417cabfee4b3cb1e761")]
 [assembly: System.Reflection.AssemblyProductAttribute("CMS.ComplaintService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CMS.ComplaintService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -18,9 +18,9 @@ if (app.Environment.IsDevelopment()) app.MapOpenApi();
 // Internal verification middleware
 app.Use(async (ctx, next) =>
 {
-    var requireInternal = ctx.GetEndpoint()?.Metadata.GetMetadata<RequireInternalAttribute>() != null;
+    var internalOnly = ctx.GetEndpoint()?.Metadata.GetMetadata<InternalOnlyAttribute>() != null;
     var internalTrusted = ctx.Request.Headers.TryGetValue("X-Internal-Trusted", out var v) && v == "true";
-    if (requireInternal && !internalTrusted)
+    if (internalOnly && !internalTrusted)
     {
         ctx.Response.StatusCode = 403;
         await ctx.Response.WriteAsync("Internal trust required");
@@ -32,18 +32,22 @@ app.Use(async (ctx, next) =>
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TenantDbContext>();
-    
-    if (!db.Tenants.Any())
-    {
-        var natwestId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
-        var hsbcId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
-        db.Tenants.AddRange(
-            new CMS.TenantService.Domain.Tenant { TenantId = natwestId, Code = "NATWEST", Name = "NatWest Bank" },
-            new CMS.TenantService.Domain.Tenant { TenantId = hsbcId, Code = "HSBC", Name = "HSBC" }
-        );
-        db.SaveChanges();
-    }
+    SeedDatabase(db);
 }
 
 app.MapControllers();
 app.Run();
+
+
+static void SeedDatabase(TenantDbContext db)
+{
+    if (db.Tenants.Any()) return;
+
+    var natwestId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    var hsbcId = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+    db.Tenants.AddRange(
+        new CMS.TenantService.Domain.Tenant { TenantId = natwestId, Code = "NATWEST", Name = "NatWest Bank" },
+        new CMS.TenantService.Domain.Tenant { TenantId = hsbcId, Code = "HSBC", Name = "HSBC" }
+    );
+    db.SaveChanges();
+}

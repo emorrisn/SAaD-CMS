@@ -149,4 +149,4 @@ C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\bin\Debug\net9.
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\bin\Debug\net9.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\bin\Debug\net9.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\bin\Debug\net9.0\runtimes\win-x86\native\e_sqlite3.dll
-C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.TenantService\obj\Debug\net9.0\CMS.TenantService.sourcelink.json

@@ -24,7 +24,17 @@ if (builder.Environment.IsDevelopment())
 
 builder.Services.AddCors(options =>
 {
- options.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin =>
+                origin.StartsWith("https://localhost:") || 
+                origin.StartsWith("http://localhost:")
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 builder.Services.AddReverseProxy()
@@ -135,7 +145,7 @@ app.Use(async (ctx, next) =>
 {
     // Ignore middleware for login/register/ping/root
     var path = ctx.Request.Path.Value?.ToLowerInvariant() ?? string.Empty;
-    if (path.StartsWith("/auth/login") || path.StartsWith("/auth/ping") || path.StartsWith("/auth/register") || path == "/")
+    if (path.StartsWith("/auth/login") || path.StartsWith("/auth/ping") || path.StartsWith("/auth/register") || path == "/" || path.StartsWith("/tenants/list"))
     {
         await next();
         return;

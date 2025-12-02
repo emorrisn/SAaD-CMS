@@ -282,3 +282,4 @@ C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.AppHost\bin\Debug\net9.0\Comm
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.AppHost\obj\Debug\net9.0\Aspire\references\CMS_TenantService.ProjectMetadata.g.cs
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.AppHost\obj\Debug\net9.0\Aspire\references\CMS_UserService.ProjectMetadata.g.cs
 C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.AppHost\obj\Debug\net9.0\Aspire\references\CMS_AuthService.ProjectMetadata.g.cs
+C:\Users\ethan\Projects\University\SAD\POC\CMS\CMS.AppHost\obj\Debug\net9.0\CMS.AppHost.sourcelink.json

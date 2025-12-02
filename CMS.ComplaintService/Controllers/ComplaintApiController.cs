@@ -48,7 +48,7 @@ public class ComplaintsController(
     public record ResolveRequest(string TenantID, string? Notes);
 
     [HttpPatch("{id}/assign")]
-    [RequireInternal]
+    [InternalOnly]
     public async Task<ActionResult> Assign(Guid id, [FromBody] AssignRequest req, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(req.TenantID)) return BadRequest("TenantID is required");
@@ -66,7 +66,7 @@ public class ComplaintsController(
     }
 
     [HttpPatch("{id}/resolve")]
-    [RequireInternal]
+    [InternalOnly]
     public async Task<ActionResult> Resolve(Guid id, [FromBody] ResolveRequest req, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(req.TenantID)) return BadRequest("TenantID is required");
@@ -93,4 +93,4 @@ public class ComplaintsController(
     }
 }
 
-public sealed class RequireInternalAttribute : Attribute {}
+public sealed class InternalOnlyAttribute : Attribute {}
