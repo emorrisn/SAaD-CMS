@@ -37,13 +37,11 @@
 
 <script setup lang="ts">
 import { sub } from "date-fns";
+import type { DateRange } from "../../types";
 
 const { status, data } = useAuth();
 
-const range = shallowRef<{
-  start: Date;
-  end: Date;
-}>({
+const range = shallowRef<DateRange>({
   start: sub(new Date(), { days: 32 }),
   end: new Date(),
 });
@@ -51,6 +49,10 @@ const range = shallowRef<{
 definePageMeta({
   layout: "dashboard",
   auth: true,
+});
+
+useSeoMeta({
+  title: "Dashboard Home",
 });
 
 onMounted(() => {

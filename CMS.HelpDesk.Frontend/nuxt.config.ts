@@ -3,6 +3,15 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   ssr: false,
+  app: {
+    head: {
+      titleTemplate: "%s · Help Desk",
+      meta: [
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "theme-color", content: "#0ea5e9" },
+      ],
+    },
+  },
   modules: [
     "@nuxt/eslint",
     "@nuxt/ui",

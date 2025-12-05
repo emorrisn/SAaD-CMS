@@ -46,10 +46,10 @@ const getMenuItems = (
     });
 
     menu.push({
-      label: isHamburger ? "Notifications" : "",
-      to: "/dashboard/notifications",
+      label: isHamburger ? "Inbox" : "",
+      to: "/dashboard/inbox",
       icon: "i-lucide-bell",
-      active: route.path.startsWith("/dashboard/notifications"),
+      active: route.path.startsWith("/dashboard/inbox"),
     });
   } else {
     menu.push({

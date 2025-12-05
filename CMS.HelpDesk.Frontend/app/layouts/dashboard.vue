@@ -81,14 +81,42 @@ const user = auth.data.value.user;
 
 const bottomLinks = [
   {
-    label: "Notifications",
+    label: "Inbox",
     icon: "i-lucide-bell",
-    to: "/dashboard/notifications",
+    to: "/dashboard/inbox",
+    badge: "4",
   },
   {
     label: user.username,
     icon: "i-lucide-circle-user",
     to: "/dashboard/settings",
+    children: [
+      {
+        label: "General",
+        to: "/dashboard/settings",
+        icon: "i-lucide-user",
+        exact: true,
+        onSelect: () => {
+          open.value = false;
+        },
+      },
+      {
+        label: "Notifications",
+        to: "/dashboard/settings/notifications",
+        icon: "i-lucide-bell",
+        onSelect: () => {
+          open.value = false;
+        },
+      },
+      {
+        label: "Security",
+        to: "/dashboard/settings/security",
+        icon: "i-lucide-shield",
+        onSelect: () => {
+          open.value = false;
+        },
+      },
+    ],
   },
 ] satisfies NavigationMenuItem[];
 
@@ -103,6 +131,20 @@ const groups = computed(() => [
   {
     id: "tickets",
     label: "Tickets",
+    items: [
+      {
+        id: "source",
+        label: "View page source",
+        icon: "i-simple-icons-github",
+        to: `https://github.com/nuxt-ui-templates/dashboard/blob/main/app/pages${
+          route.path === "/" ? "/index" : route.path
+        }.vue`,
+      },
+    ],
+  },
+  {
+    id: "inbox",
+    label: "Inbox",
     items: [
       {
         id: "source",

@@ -1,107 +1,70 @@
 <script setup lang="ts">
 import { h, resolveComponent } from "vue";
 import type { TableColumn } from "@nuxt/ui";
-
-interface Ticket {
-  id: string;
-  createdAt: string; // ISO string
-  status: "open" | "in_progress" | "resolved" | "closed";
-  requesterEmail: string;
-  subject: string;
-  priority: "low" | "medium" | "high";
-}
+import { storeToRefs } from "pinia";
+import { useTicketsStore } from "../../../stores/tickets";
+import type {
+  Ticket,
+  TicketSummary,
+  TicketPriority,
+  TicketStatus,
+} from "../../types";
 
 const UBadge = resolveComponent("UBadge");
 
 // Priority sort weights: high -> medium -> low
-const priorityWeight: Record<Ticket["priority"], number> = {
+const priorityWeight: Record<TicketPriority, number> = {
+  urgent: -1,
   high: 0,
   medium: 1,
   low: 2,
+  unknown: 3,
 };
 
-// Sorted view: by priority (high first), then by createdAt desc
+const ticketsStore = useTicketsStore();
+const { items: tickets } = storeToRefs(ticketsStore);
+
+// Map store tickets to a compact summary table
+const data = computed<TicketSummary[]>(() =>
+  tickets.value.map((t: Ticket) => ({
+    id: `#${t.id}`,
+    subject: t.subject,
+    customer: {
+      firstName: t.requester.firstName,
+      lastName: t.requester.lastName,
+    },
+    status: t.status,
+    priority: t.priority,
+    createdAt: t.createdAt,
+  }))
+);
+
+// Sorted view: by priority (high/urgent first), then by createdAt desc
 const sortedData = computed(() =>
-  [...data].sort((a, b) => {
+  [...data.value].sort((a, b) => {
     const pw = priorityWeight[a.priority] - priorityWeight[b.priority];
-    if (pw !== 0) return pw;
+    if (!Number.isNaN(pw) && pw !== 0) return pw;
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   })
 );
 
-// Hardcoded latest tickets (no randoms)
-const data: Ticket[] = [
-  {
-    id: "#1025",
-    createdAt: new Date().toISOString(),
-    status: "open",
-    requesterEmail: "alice.morgan@example.com",
-    subject: "Unable to login to portal",
-    priority: "high",
-  },
-  {
-    id: "#1024",
-    createdAt: new Date(Date.now() - 2 * 3600_000).toISOString(),
-    status: "in_progress",
-    requesterEmail: "ben.turner@example.com",
-    subject: "Error 500 on reports page",
-    priority: "medium",
-  },
-  {
-    id: "#1023",
-    createdAt: new Date(Date.now() - 6 * 3600_000).toISOString(),
-    status: "resolved",
-    requesterEmail: "chloe.smith@example.com",
-    subject: "Password reset issue",
-    priority: "low",
-  },
-  {
-    id: "#1022",
-    createdAt: new Date(Date.now() - 12 * 3600_000).toISOString(),
-    status: "closed",
-    requesterEmail: "david.lee@example.com",
-    subject: "Billing discrepancy",
-    priority: "medium",
-  },
-  {
-    id: "#1021",
-    createdAt: new Date(Date.now() - 24 * 3600_000).toISOString(),
-    status: "open",
-    requesterEmail: "eva.jones@example.com",
-    subject: "Feature request: export to CSV",
-    priority: "low",
-  },
-];
-
-const columns: TableColumn<Ticket>[] = [
+const columns: TableColumn<TicketSummary>[] = [
   {
     accessorKey: "id",
-    header: "Ticket",
-    cell: ({ row }) => {
-      const rawId = String(row.getValue("id"));
-      const id = rawId.replace(/^#/, "");
-      const NuxtLink = resolveComponent("NuxtLink");
-      return h(
-        NuxtLink,
-        {
-          to: `/dashboard/ticket/${id}`,
-          class: "text-primary hover:underline",
-        },
-        () => rawId
-      );
-    },
+    header: "ID",
+    cell: ({ row }) => String(row.getValue("id")),
   },
   {
-    accessorKey: "createdAt",
-    header: "Created",
+    accessorKey: "subject",
+    header: "Subject",
+    cell: ({ row }) => String(row.getValue("subject")),
+  },
+  {
+    accessorKey: "customer",
+    header: "Customer",
     cell: ({ row }) => {
-      return new Date(row.getValue("createdAt")).toLocaleString("en-GB", {
-        day: "numeric",
-        month: "short",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      const c = row.getValue("customer") as TicketSummary["customer"];
+      return `${c.firstName} ${c.lastName}`;
     },
   },
   {
@@ -110,45 +73,51 @@ const columns: TableColumn<Ticket>[] = [
     cell: ({ row }) => {
       const color = {
         open: "warning" as const,
-        in_progress: "info" as const,
+        pending: "info" as const,
         resolved: "success" as const,
         closed: "neutral" as const,
       }[row.getValue("status") as string];
-
       return h(UBadge, { class: "capitalize", variant: "subtle", color }, () =>
-        String(row.getValue("status")).replace("_", " ")
+        String(row.getValue("status"))
       );
     },
-  },
-  {
-    accessorKey: "subject",
-    header: "Subject",
-    cell: ({ row }) => {
-      const id = String(row.getValue("id")).replace(/^#/, "");
-      const NuxtLink = resolveComponent("NuxtLink");
-      return h(
-        NuxtLink,
-        {
-          to: `/dashboard/ticket/${id}`,
-          class: "text-primary hover:underline",
-        },
-        () => row.getValue("subject")
-      );
-    },
-  },
-  {
-    accessorKey: "requesterEmail",
-    header: "Requester",
   },
   {
     accessorKey: "priority",
-    header: () => h("div", { class: "text-right" }, "Priority"),
+    header: "Priority",
     cell: ({ row }) => {
+      const val = String(row.getValue("priority"));
+      const color =
+        (
+          {
+            low: "neutral",
+            medium: "info",
+            high: "warning",
+            urgent: "error",
+            unknown: "neutral",
+          } as const
+        )[val as keyof typeof priorityWeight] || "neutral";
       return h(
-        "div",
-        { class: "text-right font-medium capitalize" },
-        row.getValue("priority")
+        UBadge,
+        { class: "capitalize", variant: "subtle", color },
+        () => val
       );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: ({ row }) => {
+      const dt = new Date(String(row.getValue("createdAt")));
+      const diffMs = Date.now() - dt.getTime();
+      const sec = Math.floor(diffMs / 1000);
+      const min = Math.floor(sec / 60);
+      const hrs = Math.floor(min / 60);
+      const days = Math.floor(hrs / 24);
+      if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`;
+      if (hrs > 0) return `${hrs} hour${hrs > 1 ? "s" : ""} ago`;
+      if (min > 0) return `${min} minute${min > 1 ? "s" : ""} ago`;
+      return `${sec} second${sec !== 1 ? "s" : ""} ago`;
     },
   },
 ];

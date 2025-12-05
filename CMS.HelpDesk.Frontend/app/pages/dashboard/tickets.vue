@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import type { TableColumn } from "@nuxt/ui";
-import { upperFirst } from "scule";
+// removed unused upperFirst
 import { getPaginationRowModel } from "@tanstack/table-core";
 import type { Row } from "@tanstack/table-core";
-import type { User } from "~/types";
+import { storeToRefs } from "pinia";
+import { useTicketsStore } from "../../../stores/tickets";
+import type { Ticket, TicketPriority, TicketStatus } from "../../types";
 
 definePageMeta({
   layout: "dashboard",
   auth: true,
 });
 
-const UAvatar = resolveComponent("UAvatar");
+useSeoMeta({
+  title: "Tickets",
+});
+
 const UButton = resolveComponent("UButton");
 const UBadge = resolveComponent("UBadge");
 const UDropdownMenu = resolveComponent("UDropdownMenu");
@@ -19,33 +24,55 @@ const UCheckbox = resolveComponent("UCheckbox");
 const toast = useToast();
 const table = useTemplateRef("table");
 
-const columnFilters = ref([
-  {
-    id: "email",
-    value: "",
-  },
-]);
-const columnVisibility = ref();
-const rowSelection = ref({ 1: true });
+function formatColumnLabel(id: string) {
+  const pretty = id.replace(/[._]/g, " ");
+  return pretty
+    .split(" ")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
-const { data, status } = await useFetch<User[]>("/api/customers", {
-  lazy: true,
+const columnFilters = ref([]);
+const columnVisibility = ref({
+  "requester.email": false,
+  updatedAt: false,
 });
+const rowSelection = ref<Record<string | number, boolean>>({});
 
-function getRowItems(row: Row<User>) {
+const status = ref<"idle" | "pending" | "success" | "error">("idle");
+
+const ticketsStore = useTicketsStore();
+const { items: data } = storeToRefs(ticketsStore);
+
+function timeAgo(iso: string) {
+  const dt = new Date(iso);
+  const now = new Date();
+  const diffMs = now.getTime() - dt.getTime();
+  const sec = Math.floor(diffMs / 1000);
+  const min = Math.floor(sec / 60);
+  const hrs = Math.floor(min / 60);
+  const days = Math.floor(hrs / 24);
+  if (days > 0) return `${days} day${days > 1 ? "s" : ""} ago`;
+  if (hrs > 0) return `${hrs} hour${hrs > 1 ? "s" : ""} ago`;
+  if (min > 0) return `${min} minute${min > 1 ? "s" : ""} ago`;
+  return `${sec} second${sec !== 1 ? "s" : ""} ago`;
+}
+
+function getRowItems(row: Row<Ticket>) {
   return [
     {
       type: "label",
-      label: "Actions",
+      label: "Ticket Actions",
     },
     {
-      label: "Copy customer ID",
+      label: "Copy ticket ID",
       icon: "i-lucide-copy",
       onSelect() {
         navigator.clipboard.writeText(row.original.id.toString());
         toast.add({
           title: "Copied to clipboard",
-          description: "Customer ID copied to clipboard",
+          description: "Ticket ID copied to clipboard",
         });
       },
     },
@@ -53,31 +80,31 @@ function getRowItems(row: Row<User>) {
       type: "separator",
     },
     {
-      label: "View customer details",
+      label: "View ticket",
       icon: "i-lucide-list",
     },
     {
-      label: "View customer payments",
-      icon: "i-lucide-wallet",
+      label: "Assign to me",
+      icon: "i-lucide-user-plus",
     },
     {
       type: "separator",
     },
     {
-      label: "Delete customer",
+      label: "Delete ticket",
       icon: "i-lucide-trash",
       color: "error",
       onSelect() {
         toast.add({
-          title: "Customer deleted",
-          description: "The customer has been deleted.",
+          title: "Ticket deleted",
+          description: "The ticket has been deleted.",
         });
       },
     },
   ];
 }
 
-const columns: TableColumn<User>[] = [
+const columns: TableColumn<Ticket>[] = [
   {
     id: "select",
     header: ({ table }) =>
@@ -99,57 +126,91 @@ const columns: TableColumn<User>[] = [
   },
   {
     accessorKey: "id",
-    header: "ID",
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      return h("div", { class: "flex items-center gap-3" }, [
-        h(UAvatar, {
-          ...row.original.avatar,
-          size: "lg",
-        }),
-        h("div", undefined, [
-          h("p", { class: "font-medium text-highlighted" }, row.original.name),
-          h("p", { class: "" }, `@${row.original.name}`),
-        ]),
-      ]);
-    },
-  },
-  {
-    accessorKey: "email",
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
-
       return h(UButton, {
         color: "neutral",
         variant: "ghost",
-        label: "Email",
+        label: "ID",
         icon: isSorted
           ? isSorted === "asc"
             ? "i-lucide-arrow-up-narrow-wide"
             : "i-lucide-arrow-down-wide-narrow"
-          : "i-lucide-arrow-up-down",
+          : undefined,
         class: "-mx-2.5",
         onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
       });
     },
   },
   {
-    accessorKey: "location",
-    header: "Location",
-    cell: ({ row }) => row.original.location,
+    accessorKey: "subject",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Subject",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : undefined,
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
+    cell: ({ row }) =>
+      h("p", { class: "text-highlighted" }, row.original.subject),
+  },
+
+  {
+    accessorKey: "requester.name",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Customer",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : undefined,
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
+    cell: ({ row }) =>
+      h(
+        "p",
+        { class: "font-medium text-highlighted" },
+        `${row.original.requester.firstName} ${row.original.requester.lastName}`
+      ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Status",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : undefined,
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
     filterFn: "equals",
     cell: ({ row }) => {
       const color = {
-        subscribed: "success" as const,
-        unsubscribed: "error" as const,
-        bounced: "warning" as const,
+        open: "warning" as const,
+        pending: "info" as const,
+        resolved: "success" as const,
+        closed: "neutral" as const,
       }[row.original.status];
 
       return h(
@@ -159,6 +220,59 @@ const columns: TableColumn<User>[] = [
       );
     },
   },
+  {
+    accessorKey: "priority",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Priority",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : undefined,
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
+    cell: ({ row }) => {
+      const color = {
+        low: "neutral" as const,
+        medium: "info" as const,
+        high: "warning" as const,
+        urgent: "error" as const,
+        unknown: "neutral" as const,
+      }[row.original.priority];
+
+      return h(
+        UBadge,
+        { class: "capitalize", variant: "subtle", color },
+        () => row.original.priority
+      );
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      const isSorted = column.getIsSorted();
+      return h(UButton, {
+        color: "neutral",
+        variant: "ghost",
+        label: "Created At",
+        icon: isSorted
+          ? isSorted === "asc"
+            ? "i-lucide-arrow-up-narrow-wide"
+            : "i-lucide-arrow-down-wide-narrow"
+          : undefined,
+        class: "-mx-2.5",
+        onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+      });
+    },
+    cell: ({ row }) => timeAgo(row.original.createdAt),
+  },
+
   {
     id: "actions",
     cell: ({ row }) => {
@@ -204,24 +318,20 @@ watch(
   }
 );
 
-const email = computed({
-  get: (): string => {
-    return (
-      (table.value?.tableApi?.getColumn("email")?.getFilterValue() as string) ||
-      ""
-    );
-  },
-  set: (value: string) => {
-    table.value?.tableApi
-      ?.getColumn("email")
-      ?.setFilterValue(value || undefined);
-  },
-});
+// Optional: add an email filter input bound to table column
 
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
 });
+
+function handleRefresh() {
+  status.value = "pending";
+  setTimeout(() => {
+    status.value = "success";
+    toast.add({ title: "Refreshed", description: "Ticket list updated." });
+  }, 500);
+}
 </script>
 
 <template>
@@ -249,7 +359,7 @@ const pagination = ref({
             class="ring-default"
             aria-label="Refresh"
             :disabled="status === 'pending'"
-            @click="table?.tableApi?.refetch()"
+            @click="handleRefresh()"
           >
             <UIcon
               name="i-lucide-refresh-ccw"
@@ -285,16 +395,17 @@ const pagination = ref({
               v-model="statusFilter"
               :items="[
                 { label: 'All', value: 'all' },
-                { label: 'Subscribed', value: 'subscribed' },
-                { label: 'Unsubscribed', value: 'unsubscribed' },
-                { label: 'Bounced', value: 'bounced' },
+                { label: 'Open', value: 'open' },
+                { label: 'Pending', value: 'pending' },
+                { label: 'Resolved', value: 'resolved' },
+                { label: 'Closed', value: 'closed' },
               ]"
               :ui="{
                 trailingIcon:
                   'group-data-[state=open]:rotate-180 transition-transform duration-200',
               }"
               placeholder="Filter status"
-              class="min-w-2 cursor-pointer"
+              class="min-w-24 cursor-pointer"
               variant="none"
             />
 
@@ -305,7 +416,7 @@ const pagination = ref({
                 ?.getAllColumns()
                 .filter((column: any) => column.getCanHide())
                 .map((column: any) => ({
-                  label: upperFirst(column.id),
+                  label: formatColumnLabel(column.id),
                   type: 'checkbox' as const,
                   checked: column.getIsVisible(),
                   onUpdateChecked(checked: boolean) {

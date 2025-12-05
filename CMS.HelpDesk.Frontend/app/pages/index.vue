@@ -22,21 +22,6 @@
             experience.
           </div>
         </div>
-        <div data-slot="footer" class="mt-10">
-          <div
-            data-slot="links"
-            class="flex flex-wrap gap-x-6 gap-y-3 justify-center"
-          >
-            <NuxtLink
-              href="/dashboard/home"
-              rel="noopener noreferrer"
-              data-slot="base"
-              class="rounded-md font-medium inline-flex items-center disabled:cursor-not-allowed aria-disabled:cursor-not-allowed disabled:opacity-75 aria-disabled:opacity-75 transition-colors px-3 py-2 text-base gap-2 text-inverted bg-primary hover:bg-primary/75 active:bg-primary/75 disabled:bg-primary aria-disabled:bg-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-              <span data-slot="label" class="truncate">Go to Dashboard</span>
-            </NuxtLink>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -46,6 +31,10 @@
 definePageMeta({
   layout: "app",
   auth: false,
+});
+
+useSeoMeta({
+  title: "Help Desk Portal",
 });
 
 const { status } = useAuth();

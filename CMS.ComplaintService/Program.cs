@@ -1,7 +1,5 @@
 using CMS.ComplaintService.Application.Handlers;
 using CMS.ComplaintService.Application.Queries;
-using CMS.ComplaintService.Domain.Entities;
-using CMS.ComplaintService.Domain.Enums;
 using CMS.ComplaintService.Infrastructure.Data;
 using CMS.ComplaintService.Infrastructure.Messaging;
 using CMS.ComplaintService.Infrastructure.Repositories;
@@ -17,14 +15,14 @@ var connectionString = builder.Configuration.GetConnectionString("cmsdb")
     ?? builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Data Source=complaints.db";
 
-builder.Services.AddDbContext<ComplaintDbContext>(options =>
+builder.Services.AddDbContext<TicketDbContext>(options =>
 {
     options.UseSqlite(connectionString);
 });
 
-builder.Services.AddScoped<IComplaintRepository, ComplaintRepository>();
-builder.Services.AddScoped<LogComplaintHandler>();
-builder.Services.AddScoped<IComplaintQueryService, ComplaintQueryService>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<CreateTicketHandler>();
+builder.Services.AddScoped<ITicketQueryService, TicketQueryService>();
 builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
 
 var app = builder.Build();

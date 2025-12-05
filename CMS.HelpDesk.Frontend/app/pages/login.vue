@@ -43,15 +43,16 @@
 </template>
 
 <script lang="ts" setup>
+import type { Tenant } from "../types";
+
 definePageMeta({
   layout: "app",
   auth: false,
 });
 
-interface Tenant {
-  tenantId: string;
-  name: string;
-}
+useSeoMeta({
+  title: "Login",
+});
 
 const username = ref("support1");
 const password = ref("Passw0rd!");

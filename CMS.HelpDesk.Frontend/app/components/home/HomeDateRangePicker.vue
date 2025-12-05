@@ -5,17 +5,13 @@ import {
   CalendarDate,
   today,
 } from "@internationalized/date";
-
-interface Range {
-  start: Date;
-  end: Date;
-}
+import type { DateRange } from "../../types";
 
 const df = new DateFormatter("en-US", {
   dateStyle: "medium",
 });
 
-const selected = defineModel<Range>({ required: true });
+const selected = defineModel<DateRange>({ required: true });
 
 const ranges = [
   { label: "Last 7 days", days: 7 },
